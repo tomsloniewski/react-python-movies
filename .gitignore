@@ -1,2 +1,9 @@
 .idea/
 venv/
+*/bin
+*/lib
+*/lib64
+*/node_modules
+*/pyvenv.cfg
+*/package-lock.json
+package-lock.json
