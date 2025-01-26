@@ -18,7 +18,12 @@ export default function MovieForm(props) {
         setDescription('');
     }
 
-    return <form onSubmit={addMovie}>
+    function deleteMovie(event) {
+        event.preventDefault();
+        props.onDeleteMovie({title, year, director, description});
+    }
+
+    return <form onSubmit={addMovie} onDelete={deleteMovie}>
         <h2>Add movie</h2>
         <div>
             <label>Tytuł</label>
