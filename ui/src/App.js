@@ -1,5 +1,5 @@
 import './App.css';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import "milligram";
 import MovieForm from "./MovieForm";
 import MoviesList from "./MoviesList";
@@ -14,14 +14,38 @@ function App() {
             {
                 method: 'POST',
                 body: JSON.stringify(movie),
-                headers: { 'Content-Type': 'application/json'
+                headers: { 'Content-Type': 'application/json' }
             }
-        });
+        );
         if(response.ok) {
             setMovies([...movies, movie]);
             setAddingMovie(false);
         }
     }
+
+    async function handleDeleteMovie(movie) {
+
+        const response = await fetch(`/movies/${movie.id}`,
+            {
+                method: 'DELETE'
+            }
+        );
+        if(response.ok) {
+            setMovies(movies.filter(m => m !== movie));
+        }
+    }
+
+    useEffect(() => {
+        const fetchMovies = async () => {
+            const response = await fetch('/movies');
+            if(response.ok) {
+                const movies = await response.json();
+                setMovies(movies);
+            }
+        };
+        fetchMovies();
+    }, []);
+
 
     return (
         <div className="container">
