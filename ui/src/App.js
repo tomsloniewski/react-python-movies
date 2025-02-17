@@ -5,12 +5,14 @@ import MovieForm from "./MovieForm";
 import MoviesList from "./MoviesList";
 import ActorForm from "./ActorForm";
 import ActorsList from "./ActorsList";
+import ActorInMovieForm from "./ActorInMovieForm";
 
 function App() {
     const [movies, setMovies] = useState([]);
     const [addingMovie, setAddingMovie] = useState(false);
     const [actors, setActors] = useState([]);
     const [addingActor, setAddingActor] = useState(false);
+    const [addingActorToMovie] = useState([]);
 
     async function handleAddMovie(movie) {
 
@@ -68,6 +70,27 @@ function App() {
         }
     }
 
+    async function handleAddActorToMovie(actorId, movieId) {
+        const response = await fetch('/movies/' + movieId + '/actors',
+            {
+                method: 'POST',
+                body: actorId,
+                headers: { 'Content-Type': 'application/json' }
+            }
+        );
+        if(response.ok) {
+            await fetchMovies();
+        }
+    }
+
+    async function fetchMovies() {
+        const response = await fetch('/movies');
+        if(response.ok) {
+            const movies = await response.json();
+            setMovies(movies);
+        }
+    };
+
     async function handleDeleteActor(actor) {
 
         const response = await fetch(`/actors/${actor.id}`,
@@ -99,6 +122,7 @@ function App() {
                 ? <p>No movies yet. Maybe add something?</p>
                 : <MoviesList movies={movies}
                               handleDeleteMovie={handleDeleteMovie}
+                              handleAddActorToMovie={handleAddActorToMovie}
                 />}
             {addingMovie
                 ? <MovieForm onMovieSubmit={handleAddMovie}
@@ -115,7 +139,12 @@ function App() {
                 ? <ActorForm onActorSubmit={handleAddActor}
                              buttonLabel="Add an actor"
                 />
-                : <button onClick={() => setAddingActor(true)}>Add an actor</button>}
+                : <button onClick={() => setAddingActor(true)}>Add an actor to movie</button>}
+            {addingActorToMovie
+                ? <ActorInMovieForm onActorToMovieSubmit={handleAddActorToMovie}
+                             buttonLabel="Add an actor to movie"
+                />
+                : <button onClick={() => setMovies(true)}>Add an actor</button>}
         </div>
     );
 }

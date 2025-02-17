@@ -11,6 +11,9 @@ export default function MovieListItem(props) {
                 <a onClick={props.onDelete}>Delete</a>
             </div>
             {props.movie.description}
+            {' '}
+            <br/>
+            Actors: {props.movie.actors.map(actor => actor.name + ' ' + actor.surname).join(', ')}
         </div>
     );
 }
